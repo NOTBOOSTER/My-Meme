@@ -1,11 +1,11 @@
 import { Button } from "@/components/ui/button";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div className="">
-      hey
+      {/* hey
       <Button> shad cn
-      </Button>
+      </Button> */}
     </div>
   );
 }
