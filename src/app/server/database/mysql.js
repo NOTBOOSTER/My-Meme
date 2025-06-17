@@ -1,4 +1,5 @@
 import mysql from "mysql2/promise";
+import setupDB from "./setup";
 
 let connection;
 
@@ -10,6 +11,7 @@ const createConnection = async () => {
       password: process.env.DATABASE_PASSWORD,
       port: process.env.DATABASE_PORT,
     });
+    await setupDB(connection);
   }
   return connection;
 };
