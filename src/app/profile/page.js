@@ -21,20 +21,3 @@ const profile = () => {
 };
 
 export default profile;
-
-
-{/* <div className="flex justify-between w-full px-20">
-        <div className="flex flex-col items-center">
-          <span className="font-bold">Memes</span>
-          <span className="font-semibold">100</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <span className="font-bold">Followers</span>
-          <span className="font-semibold">100</span>
-        </div>
-        <div className="flex flex-col items-center">
-          <span className="font-bold">Following</span>
-          <span className="font-semibold">100</span>
-        </div>
-        
-      </div> */}
