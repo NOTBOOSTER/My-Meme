@@ -1,10 +1,11 @@
 "use client"
 
-import { redirect } from "next/navigation";
+import { useRouter } from 'next/navigation'
 import { useSession, signIn} from "next-auth/react";
 import { FaGithub } from "react-icons/fa";
-
+import { redirect } from "next/navigation";
 const login = () => {
+  const router = useRouter()
   const { data: session } = useSession();
   if (session) {
     redirect("/")

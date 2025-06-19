@@ -2,6 +2,7 @@ import Image from "next/image";
 import { IoSearchOutline } from "react-icons/io5";
 import { IoAddSharp } from "react-icons/io5";
 import { HiOutlineUserCircle } from "react-icons/hi2";
+import Link from "next/link";
 
 const Header = () => {
   return (
@@ -26,9 +27,9 @@ const Header = () => {
           </button>
         </div>
         <div className="hidden md:flex ml-8">
-          <button className=" p-0.5 text-gray-800 rounded-full">
+          <Link href="/profile" className=" p-0.5 text-gray-800 rounded-full">
             <HiOutlineUserCircle size={30} />
-          </button>
+          </Link>
         </div>
       </div>
     </div>
