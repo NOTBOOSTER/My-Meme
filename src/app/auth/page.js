@@ -1,12 +1,16 @@
 "use client"
 
-import { useRouter } from 'next/navigation'
 import { useSession, signIn} from "next-auth/react";
 import { FaGithub } from "react-icons/fa";
 import { redirect } from "next/navigation";
-const login = () => {
-  const router = useRouter()
-  const { data: session } = useSession();
+import Loading from "@/components/loading";
+const Login = () => {
+  const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return <Loading />; 
+  }
+
   if (session) {
     redirect("/")
   }
@@ -23,4 +27,4 @@ const login = () => {
   </div>;
 };
 
-export default login;
+export default Login;

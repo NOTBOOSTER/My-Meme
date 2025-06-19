@@ -7,13 +7,13 @@ const Footer = () => {
   return (
     <div className="md:hidden flex fixed bottom-6 items-center justify-center w-full">
       <div className="bg-gradient-to-r from-indigo-300 to-violet-300 flex gap-9 p-2 rounded-full px-12">
-        <Link className="p-2" href="/hey">
+        <Link className="p-2" href="/">
           <RiHome2Fill size={30} color="30355d"/>
         </Link>
-        <Link className="bg-gray-200 p-1 rounded-full border border-violet-400" href="/hey">
+        <Link className="bg-gray-200 p-1 rounded-full border border-violet-400" href="/post/create">
           <IoMdAdd size={40} color="30355d"/>
         </Link>
-        <Link className="p-2" href="/hey">
+        <Link className="p-2" href="/profile">
           <MdAccountCircle size={30} color="30355d"/>
         </Link>
       </div>

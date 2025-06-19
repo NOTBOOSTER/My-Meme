@@ -14,11 +14,13 @@ const setupDB = async (connection) => {
     avatar_url TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
-    await connection.query(`CREATE TABLE IF NOT EXISTS memes (
+    await connection.query(`CREATE TABLE IF NOT EXISTS meme_queue (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    image_url TEXT NOT NULL,
+    prompt TEXT NOT NULL,
+    status ENUM('pending', 'processing', 'completed', 'failed') DEFAULT 'pending',
     caption TEXT,
+    result_url TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );`);
