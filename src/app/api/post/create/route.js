@@ -3,14 +3,24 @@
 import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import createConnection from "@/server/database/mysql";
 
 export async function POST(request) {
   const session = await getServerSession(authOptions);
   if (!session) {
     return NextResponse.redirect(new URL("/auth", request.url));
   } else {
-    const data = await request.json();
-    console.log("hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+    const prompt = await request.json();
+    try {
+      const connection = await createConnection();
+      const [user] = await connection.execute(`SELECT * FROM users WHERE email = ?`,
+        [session.user.email]
+      )
+      console.log(session)
+      const db = await connection.execute(`INSERT INTO memes `)
+    } catch (err) {
+
+    }
     return NextResponse.json({ ct: "ok" });
   }
 }

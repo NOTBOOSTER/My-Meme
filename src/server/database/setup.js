@@ -14,7 +14,7 @@ const setupDB = async (connection) => {
     avatar_url TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
-    await connection.query(`CREATE TABLE IF NOT EXISTS meme_queue (
+    await connection.query(`CREATE TABLE IF NOT EXISTS memes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     prompt TEXT NOT NULL,

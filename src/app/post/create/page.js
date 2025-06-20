@@ -5,10 +5,15 @@ import { useSession } from "next-auth/react";
 import Loading from "@/components/loading";
 import { useRef } from "react";
 import { RiAiGenerate2 } from "react-icons/ri";
+import { toast } from "sonner"
 
 const Create = () => {
   const ref = useRef(null);
+  let err = "";
   const submitPost = async () => {
+    if (ref.current.value === "" || ref.current.value.length < 12) {
+      return toast("Prompt must be at least 12 characters long.", { duration: 3000 });
+    }
     const response = await fetch("/api/post/create", {
       method: "POST",
       headers: {
@@ -21,6 +26,7 @@ const Create = () => {
 
     ref.current.value = "";
   };
+  
   const { data: session, status } = useSession();
 
   if (status === "loading") {

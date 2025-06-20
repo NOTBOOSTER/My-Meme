@@ -2,6 +2,7 @@ import Header from "@/components/main/Header";
 import Footer from "@/components/main/Footer";
 import SessionWrapper from "@/components/sessionWrapper";
 import "./globals.css";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata = {
   title: "MyMeme : Ai generated memes",
@@ -18,6 +19,7 @@ export default function RootLayout({ children }) {
         {children}
         </SessionWrapper>
         <Footer />
+        <Toaster />
       </body>
     </html>
   );
