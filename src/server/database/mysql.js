@@ -15,6 +15,7 @@ const createConnection = async () => {
       await setupDB(connection);
       console.log("💾DB | Connected to database");
   }
+  await connection.query(`USE ${process.env.DATABASE_NAME}`)
   return connection;
 };
 

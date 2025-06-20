@@ -12,6 +12,9 @@ const setupDB = async (connection) => {
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash TEXT,
     avatar_url TEXT,
+    followers INT NOT NULL DEFAULT 0,
+    following INT NOT NULL DEFAULT 0,
+    memes INT NOT NULL DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 )`);
     await connection.query(`CREATE TABLE IF NOT EXISTS memes (

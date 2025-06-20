@@ -12,7 +12,7 @@ const Create = () => {
   let err = "";
   const submitPost = async () => {
     if (ref.current.value === "" || ref.current.value.length < 12) {
-      return toast("Prompt must be at least 12 characters long.", { duration: 3000 });
+      return toast("ⓘ Prompt must be at least 12 characters long.", { duration: 3000 });
     }
     const response = await fetch("/api/post/create", {
       method: "POST",
