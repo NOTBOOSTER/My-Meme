@@ -16,11 +16,12 @@ export async function POST(request) {
       const [user] = await connection.execute(`SELECT * FROM users WHERE email = ?`,
         [session.user.email]
       )
-      console.log(session)
-      const db = await connection.execute(`INSERT INTO memes `)
+      const db = await connection.execute(`INSERT INTO memes (user_id, prompt, status) VALUES (?, ?, ?)`,
+        [session.user.id, prompt, "pending"]
+      )
     } catch (err) {
 
     }
-    return NextResponse.json({ ct: "ok" });
+    return NextResponse.json({response: "success"});
   }
 }

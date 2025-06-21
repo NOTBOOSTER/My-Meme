@@ -9,7 +9,7 @@ const NotFound = () => {
         Page Not Found
       </span>
       <Link href="/">
-      <button className="bg-violet-300 rounded-full px-5 font-mono font-semibold text-gray-700 m-5 py-2 text-md border border-violet-500">Go Back</button></Link>
+      <button className="bg-violet-300 rounded-full px-5 font-mono font-semibold text-gray-700 m-5 py-2 text-md border border-violet-500 cursor-pointer">Go Back</button></Link>
     </div>
   );
 };

@@ -11,9 +11,9 @@ const Create = () => {
   const ref = useRef(null);
   let err = "";
   const submitPost = async () => {
-    if (ref.current.value === "" || ref.current.value.length < 12) {
-      return toast("ⓘ Prompt must be at least 12 characters long.", { duration: 3000 });
-    }
+    if (ref.current.value === "") return
+    if (ref.current.value.length < 12) return toast("ⓘ Prompt must be at least 12 characters long.", { duration: 3000 });
+
     const response = await fetch("/api/post/create", {
       method: "POST",
       headers: {
@@ -22,7 +22,8 @@ const Create = () => {
       body: JSON.stringify(ref.current.value),
       credentials: "include",
     });
-    console.log(await response.json());
+    const res = await response.json();
+    if (res.response === "success") redirect("/");
 
     ref.current.value = "";
   };
@@ -47,7 +48,7 @@ const Create = () => {
           className="min-w-56 max-h-100 min-h-36 border-2 border-violet-300 rounded-lg p-2"
         ></textarea>
         <button
-          className="flex justify-center items-center gap-3 mt-12 bg-gradient-to-r from-violet-200 to-pink-200 p-4 rounded-4xl"
+          className="flex justify-center items-center gap-3 mt-12 bg-gradient-to-r from-violet-200 to-pink-200 p-4 rounded-4xl transition delay-150 duration-500 ease-in-out hover:scale-110 hover:-translate-y-1 hover:border-violet-400 border"
           onClick={submitPost}
         >
           <RiAiGenerate2 size={25} color="30355d" />
