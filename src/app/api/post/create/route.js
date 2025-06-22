@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import createConnection from "@/server/database/mysql";
+import runQueue from "@/lib/queueWorker";
 
 export async function POST(request) {
   const session = await getServerSession(authOptions);
@@ -19,6 +20,7 @@ export async function POST(request) {
       const db = await connection.execute(`INSERT INTO memes (user_id, prompt, status) VALUES (?, ?, ?)`,
         [session.user.id, prompt, "pending"]
       )
+      runQueue();
     } catch (err) {
 
     }
