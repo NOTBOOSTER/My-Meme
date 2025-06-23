@@ -1,3 +1,5 @@
+"use server";
+
 import { GoogleGenAI, Modality } from "@google/genai";
 
 const generateMeme = async (prompt) => {
@@ -14,6 +16,7 @@ Theme: "${prompt}"
 
 Instructions:
 - Create a single meme image that visually represents the theme in a humorous, sarcastic, or ironic way.
+- The image only be a funny image not normal image.
 - The image MUST contain a bold, highly readable caption overlaid directly within it.
 - The caption must be exactly one to two lines long, funny, and relevant to the theme.
 - Use only standard English letters (A-Z, a-z, 0-9). DO NOT use symbols, emojis, or non-standard characters in the caption.
@@ -50,6 +53,9 @@ Output Requirements:
     if (part.text) caption = part.text;
     if (part.inlineData?.data) image = part.inlineData.data;
   }
+  const captionPrefixRegex = /^\s*(\*\*?)?Caption\s*:?\s*(\*\*?)?\s*/i;
+
+  caption = caption.replace(captionPrefixRegex, "");
 
   return { caption, image };
 };

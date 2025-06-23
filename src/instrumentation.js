@@ -1,8 +1,10 @@
-import runQueue from "./lib/queueWorker"
-import createConnection from "./server/database/mysql"
+"use server";
+
+import runQueue from "./lib/queueWorker";
+import createConnection from "./server/database/mysql";
 
 export async function register() {
-  console.log("SERVER | Starting Server")
-  await createConnection()
+  console.log("SERVER | Starting Server");
+  await createConnection();
   runQueue();
 }

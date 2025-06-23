@@ -24,6 +24,7 @@ export async function GET(request) {
       userDetails.followers = user[0].followers;
       userDetails.following = user[0].following;
       userDetails.memes = user[0].memes;
+      userDetails.id = user[0].id;
       return NextResponse.json(userDetails);
     } catch (err) {
       console.error("DB error", err);

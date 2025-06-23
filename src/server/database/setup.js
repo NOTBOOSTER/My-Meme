@@ -1,3 +1,5 @@
+"use server";
+
 const setupDB = async (connection) => {
   try {
     await connection.query(

@@ -1,3 +1,5 @@
+"use server";
+
 import uploadMeme from "@/server/cloudinary/uploadMeme";
 import generateMeme from "./gemini";
 import createConnection from "@/server/database/mysql";

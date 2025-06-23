@@ -1,3 +1,5 @@
+"use server"
+
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
@@ -11,6 +13,6 @@ const uploadMeme = async(base64, id) => {
     folder: "memes",
     public_id: `meme-${id}`,
   });
-}
+};
 
 export default uploadMeme

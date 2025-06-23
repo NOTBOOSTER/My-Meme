@@ -2,9 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Memes from "./items/memes";
 import Following from "./items/following";
 import Followers from "./items/followers";
-import { use } from "react";
 const Statics = ({userData}) => {
-  console.log(userData)
   return (
     <div className="mt-6 ">
       <Tabs defaultValue="memes" className="">
@@ -29,7 +27,7 @@ const Statics = ({userData}) => {
           </TabsTrigger>
         </TabsList>
         <TabsContent value="memes" className="pt-18">
-          <Memes />
+          <Memes userId={userData.id}/>
         </TabsContent>
         <TabsContent value="following" className="pt-18">
           <Following />
