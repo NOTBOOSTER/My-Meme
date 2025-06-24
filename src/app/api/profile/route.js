@@ -1,12 +1,12 @@
 "use server";
 
-import { getServerSession } from "next-auth/next";
+
 import { NextResponse } from "next/server";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import createConnection from "@/server/database/mysql";
+import { auth } from "@/lib/auth";
 
 export async function GET(request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
   if (!session) {
     return NextResponse.redirect(new URL("/auth", request.url));
   } else {
@@ -18,7 +18,7 @@ export async function GET(request) {
         [session.user.email]
       );
 
-      userDetails.name = user[0].first_name + " " + user[0].last_name;
+      userDetails.name = user[0].first_name + " " + (user[0].last_name === null ? "" : user[0].last_name);
       userDetails.username = user[0].username;
       userDetails.image = user[0].avatar_url;
       userDetails.followers = user[0].followers;

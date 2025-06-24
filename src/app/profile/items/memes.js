@@ -32,7 +32,6 @@ const Memes = ({userId}) => {
         body: JSON.stringify({ start, end, limit: itemsPerPage, userId }),
       })
       const data = await response.json()
-      console.log(data)
       
       if (data.memes && data.memes.length > 0) {
         if (append) {
@@ -61,18 +60,17 @@ const Memes = ({userId}) => {
   }, [page, loading, hasMore, userId])
 
   const handleScroll = useCallback(() => {
-    if (loading || !hasMore) return
+  if (loading || !hasMore) return;
 
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop
-    const windowHeight = window.innerHeight
-    const documentHeight = document.documentElement.scrollHeight
+  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  const windowHeight = window.innerHeight;
+  const documentHeight = document.documentElement.scrollHeight;
 
-    if (scrollTop + windowHeight >= documentHeight - 200) {
-      loadMoreMemes()
-    }
-  }, [loadMoreMemes])
+  if (scrollTop + windowHeight >= documentHeight - 200) {
+    loadMoreMemes();
+  }
+}, [loading, hasMore, loadMoreMemes]);
 
-  // Initial load
   useEffect(() => {
     if (userId) {
       fetchMemes(1)

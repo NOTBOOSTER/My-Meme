@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { IoSearchOutline } from "react-icons/io5";
-import { IoAddSharp } from "react-icons/io5";
+import { IoAddSharp, IoLogOut  } from "react-icons/io5";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import Link from "next/link";
 import { usePathname } from 'next/navigation'
 import { IoMdSettings } from "react-icons/io";
+import { signOut } from "next-auth/react";
 
 const Header = () => {
   const pathname = usePathname()
@@ -35,11 +36,14 @@ const Header = () => {
         <div className={`${pathname === "/profile" ? "" : "hidden"}`}>
           <IoMdSettings size={30} color="30355d"/>
         </div>
-        <div className="hidden md:flex ml-8">
+        <div className={`${pathname === "/profile" ? "hidden" : "md:flex"} hidden  ml-8 `}>
           <Link href="/profile" className=" p-0.5 text-gray-800 rounded-full">
-            <HiOutlineUserCircle size={30} />
+            <HiOutlineUserCircle size={30} color="30355d"/>
           </Link>
         </div>
+        <button onClick={() => signOut()} className={`${pathname === "/profile" ? "flex" : "hidden"} md:ml-8 `}>
+            <IoLogOut size={30} color="30355d"/>
+        </button>
       </div>
     </div>
   );

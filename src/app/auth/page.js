@@ -1,7 +1,7 @@
 "use client"
 
 import { useSession, signIn} from "next-auth/react";
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaGoogle, FaDiscord } from "react-icons/fa";
 import { redirect } from "next/navigation";
 import Loading from "@/components/loading";
 const Login = () => {
@@ -24,6 +24,18 @@ const Login = () => {
             Login With Github
         </span>
     </button>
+    <button className="bg-gradient-to-r from-blue-300 to-pink-200 rounded-full flex text-white p-2 justify-center items-center gap-3 px-5 mt-8 cursor-pointer" onClick={() => signIn("google")}>
+        <FaGoogle size={30}/>
+        <span className="">
+            Login With Google
+        </span>
+    </button>
+    {/* <button className="bg-gradient-to-r from-indigo-500 to-indigo-400 rounded-full flex text-white p-2 justify-center items-center gap-3 px-5 mt-8 cursor-pointer" onClick={() => signIn("discord")}>
+        <FaDiscord size={30}/>
+        <span className="">
+            Login With Discord
+        </span>
+    </button> */}
   </div>;
 };
 

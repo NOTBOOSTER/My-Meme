@@ -16,7 +16,7 @@ const runQueue = async () => {
     );
     if (rows.length === 0) return (isRunning = false);
     const { id, prompt } = rows[0];
-    await connection.query("UPDATE memes SET status = 'processing' WHERE id = ?", [
+    await connection.execute("UPDATE memes SET status = 'processing' WHERE id = ?", [
       id,
     ]);
     const { caption, image } = await generateMeme(prompt);
@@ -29,9 +29,13 @@ const runQueue = async () => {
       return;
     }
     const uploadResult = await uploadMeme(image, id);
-    await connection.query(
+    await connection.execute(
       "UPDATE memes SET status = 'completed' , result_url = ?, caption = ? WHERE id = ?",
       [uploadResult.secure_url, caption, id]
+    );
+    await connection.execute(
+      "UPDATE users SET memes = memes + 1 WHERE id = ?",
+      [rows[0].user_id]
     );
     isRunning = false;
     runQueue();

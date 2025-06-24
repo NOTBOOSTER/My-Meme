@@ -1,13 +1,14 @@
 "use server"
 
-import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import createConnection from "@/server/database/mysql";
 import runQueue from "@/lib/queueWorker";
+import { auth } from "@/lib/auth";
 
 export async function POST(request) {
-  const session = await getServerSession(authOptions);
+  const session = await auth();
+  console.log(session);
+  
   if (!session) {
     return NextResponse.redirect(new URL("/auth", request.url));
   } else {
@@ -22,7 +23,8 @@ export async function POST(request) {
       )
       runQueue();
     } catch (err) {
-
+      console.log(err);
+      
     }
     return NextResponse.json({response: "success"});
   }

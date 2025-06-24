@@ -18,7 +18,6 @@ const Profile = () => {
         const response = await fetch("/api/profile");
         const data = await response.json();
         setUserData(data);
-        console.log(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
