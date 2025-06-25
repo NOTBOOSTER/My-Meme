@@ -1,8 +1,10 @@
 "use client";
 
 import Loading from "@/components/loading";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import {
   FaHeart,
@@ -14,6 +16,7 @@ import {
 } from "react-icons/fa";
 
 export default function Home() {
+  const { data: session } = useSession();
   const [memes, setMemes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [offset, setOffset] = useState(0);
@@ -32,6 +35,7 @@ export default function Home() {
         body: JSON.stringify({ start: currentOffset, limit }),
       });
       const data = await response.json();
+      console.log(data);
       if (!response.ok) throw new Error(data.error || "Failed to fetch memes");
       setMemes((prevMemes) => [...prevMemes, ...data.memes]);
       setHasMore(data.memes.length === limit);
@@ -63,7 +67,66 @@ export default function Home() {
     };
   }, [hasMore, loading]);
 
-  const handleReaction = (memeId, reactionType) => {};
+  const handleReaction = (memeId, reactionType) => {
+    if (!session) return redirect("/auth");
+
+    const meme = memes.find((m) => m.id === memeId);
+    if (!meme) return;
+
+    const reactionToColumnMap = {
+      like: "likes",
+      dislike: "dislikes",
+      crying: "crying",
+      happy: "happy",
+    };
+
+    const updatedCounts = {
+      likes: parseInt(meme.likes) || 0,
+      dislikes: parseInt(meme.dislikes) || 0,
+      happy: parseInt(meme.happy) || 0,
+      crying: parseInt(meme.crying) || 0,
+    };
+
+    let newReaction;
+
+    if (meme.user_reaction) {
+      const oldColumnName = reactionToColumnMap[meme.user_reaction];
+      if (oldColumnName) {
+        updatedCounts[oldColumnName] = Math.max(
+          0,
+          updatedCounts[oldColumnName] - 1
+        );
+      }
+    }
+
+    if (meme.user_reaction === reactionType) {
+      newReaction = null;
+    } else {
+      const newColumnName = reactionToColumnMap[reactionType];
+      if (newColumnName) {
+        updatedCounts[newColumnName] = updatedCounts[newColumnName] + 1;
+        newReaction = reactionType;
+      }
+    }
+
+    setMemes((prevMemes) =>
+      prevMemes.map((m) =>
+        m.id === memeId
+          ? { ...m, ...updatedCounts, user_reaction: newReaction }
+          : m
+      )
+    );
+
+    fetch(`/api/meme/reaction`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ memeId, reactionType }),
+    }).catch((error) => {
+      console.error("Failed to update reaction:", error);
+    });
+  };
 
   return (
     <div className="min-h-screen py-6 px-4 sm:px-6 lg:px-8 h-full">
@@ -112,7 +175,9 @@ export default function Home() {
               <div className="flex justify-between items-center p-4 border-t border-gray-200">
                 <button
                   onClick={() => handleReaction(meme.id, "like")}
-                  className="flex items-center text-gray-600 hover:text-red-500 transition-colors"
+                  className={`flex items-center text-gray-600 hover:text-red-500 transition-colors ${
+                    meme.user_reaction === "like" ? "text-red-500" : ""
+                  }`}
                   title="Like"
                 >
                   <FaHeart className="h-5 w-5" />
@@ -120,7 +185,9 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => handleReaction(meme.id, "dislike")}
-                  className="flex items-center text-gray-600 hover:text-blue-500 transition-colors"
+                  className={`flex items-center text-gray-600 hover:text-blue-500 transition-colors ${
+                    meme.user_reaction === "dislike" ? "text-blue-500" : ""
+                  }`}
                   title="Dislike"
                 >
                   <FaThumbsDown className="h-5 w-5" />
@@ -128,7 +195,9 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => handleReaction(meme.id, "happy")}
-                  className="flex items-center text-gray-600 hover:text-yellow-500 transition-colors"
+                  className={`flex items-center text-gray-600 hover:text-yellow-500 transition-colors ${
+                    meme.user_reaction === "happy" ? "text-yellow-500" : ""
+                  }`}
                   title="Happy"
                 >
                   <FaSmile className="h-5 w-5" />
@@ -136,7 +205,9 @@ export default function Home() {
                 </button>
                 <button
                   onClick={() => handleReaction(meme.id, "crying")}
-                  className="flex items-center text-gray-600 hover:text-teal-500 transition-colors"
+                  className={`flex items-center text-gray-600 hover:text-teal-500 transition-colors ${
+                    meme.user_reaction === "crying" ? "text-teal-500" : ""
+                  }`}
                   title="Crying"
                 >
                   <FaSadCry className="h-5 w-5" />
