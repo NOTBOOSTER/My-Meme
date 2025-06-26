@@ -35,7 +35,6 @@ export default function Home() {
         body: JSON.stringify({ start: currentOffset, limit }),
       });
       const data = await response.json();
-      console.log(data);
       if (!response.ok) throw new Error(data.error || "Failed to fetch memes");
       setMemes((prevMemes) => [...prevMemes, ...data.memes]);
       setHasMore(data.memes.length === limit);
