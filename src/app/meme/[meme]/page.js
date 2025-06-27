@@ -207,8 +207,8 @@ const Meme = ({ params }) => {
               <span className="ml-1 text-sm">{meme.crying}</span>
             </button>
           </div>
-          <div className="md:flex justify-between items-center mx-10 p-4 rounded-3xl border-t border-gray-200 hidden  bg-white h-screen my-3">
-            <Comments />
+          <div className="md:flex mx-10 p-4 rounded-3xl border-t border-gray-200 hidden h-screen bg-white mb-48 md:mb-2 my-3 ">
+            <Comments memeId={meme.id}/>
           </div>
         </div>
       </div>
