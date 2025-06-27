@@ -20,10 +20,10 @@ export async function POST(request) {
               u.username,
               u.avatar_url,
               COUNT(DISTINCT c.id) AS comments,
-              SUM(CASE WHEN r.emoji = 'like' THEN 1 ELSE 0 END) AS likes,
-              SUM(CASE WHEN r.emoji = 'dislike' THEN 1 ELSE 0 END) AS dislikes,
-              SUM(CASE WHEN r.emoji = 'happy' THEN 1 ELSE 0 END) AS happy,
-              SUM(CASE WHEN r.emoji = 'crying' THEN 1 ELSE 0 END) AS crying
+              COUNT(DISTINCT CASE WHEN r.emoji = 'like' THEN r.id END) AS likes,
+              COUNT(DISTINCT CASE WHEN r.emoji = 'dislike' THEN r.id END) AS dislikes,
+              COUNT(DISTINCT CASE WHEN r.emoji = 'happy' THEN r.id END) AS happy,
+              COUNT(DISTINCT CASE WHEN r.emoji = 'crying' THEN r.id END) AS crying
             FROM memes m
             INNER JOIN users u ON m.user_id = u.id
             LEFT JOIN reactions r ON m.id = r.meme_id
@@ -45,10 +45,10 @@ export async function POST(request) {
               u.username,
               u.avatar_url,
               COUNT(DISTINCT c.id) AS comments,
-              SUM(CASE WHEN r.emoji = 'like' THEN 1 ELSE 0 END) AS likes,
-              SUM(CASE WHEN r.emoji = 'dislike' THEN 1 ELSE 0 END) AS dislikes,
-              SUM(CASE WHEN r.emoji = 'happy' THEN 1 ELSE 0 END) AS happy,
-              SUM(CASE WHEN r.emoji = 'crying' THEN 1 ELSE 0 END) AS crying,
+    COUNT(DISTINCT CASE WHEN r.emoji = 'like' THEN r.id END) AS likes,
+    COUNT(DISTINCT CASE WHEN r.emoji = 'dislike' THEN r.id END) AS dislikes,
+    COUNT(DISTINCT CASE WHEN r.emoji = 'happy' THEN r.id END) AS happy,
+    COUNT(DISTINCT CASE WHEN r.emoji = 'crying' THEN r.id END) AS crying,
               (SELECT r2.emoji 
                FROM reactions r2 
                WHERE r2.meme_id = m.id AND r2.user_id = ? 
