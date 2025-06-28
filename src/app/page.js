@@ -136,8 +136,8 @@ export default function Home() {
               key={meme.id}
               className="bg-gradient-to-b from-sky-100 to-emerald-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col"
             >
-              <div className="flex justify-between items-center">
-                <div className="flex items-center p-4">
+              <div className="flex justify-between items-center mx-4">
+                <Link href={`/profile/${meme.username === session?.user?.username ? "" : meme.username}`} className="flex items-center py-4">
                   <Image
                     src={meme.avatar_url}
                     width={40}
@@ -145,13 +145,20 @@ export default function Home() {
                     alt={`${meme.username}'s profile picture`}
                     className="rounded-full object-cover"
                   />
-                  <span className="ml-3 font-semibold text-gray-900">
+                  <div className="flex flex-col">
+                  <span className="ml-3 font-semibold text-gray-900 text-sm">
+                    {meme.first_name + " " + (meme.last_name ? meme.last_name : "")}
+                  </span>
+                  <span className="ml-3 font-semibold text-gray-500 text-[12px]">
                     {meme.username}
                   </span>
-                  <button className="ml-3 text-gray-600 hover:text-gray-800 transition-colors">
+                  </div>
+                  
+                  
+                </Link>
+                {/* <button className=" text-gray-600 hover:text-gray-800 transition-colors">
                     <FaRegShareSquare size={20} />
-                  </button>
-                </div>
+                  </button> */}
               </div>
 
               <Link href={`/meme/${meme.id}`}>

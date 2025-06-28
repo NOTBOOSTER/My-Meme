@@ -14,12 +14,13 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className="bg-gradient-to-b from-indigo-100 to-purple-50 min-h-screen">
-        <Header />
+        
         <SessionWrapper>
+          <Header />
         {children}
-        </SessionWrapper>
         <Footer />
         <Toaster />
+        </SessionWrapper>
       </body>
     </html>
   );

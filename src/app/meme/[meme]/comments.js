@@ -3,6 +3,7 @@
 import { ArrowRightSquare } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useEffect, useRef, useState, useCallback } from "react"
 import { IoMdSend } from "react-icons/io";
@@ -93,7 +94,7 @@ const Comments = ({memeId}) => {
     if (hasMore) {
       fetchComments(limit, offset, memeId);
     }
-  }, [memeId, offset]);
+  }, [memeId, offset, hasMore]);
 
   return (
     <div className="w-full h-screen">

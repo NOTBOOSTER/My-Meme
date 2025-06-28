@@ -33,9 +33,9 @@ const Header = () => {
             <IoAddSharp size={30} />
           </Link>
         </div>
-        <div className={`${pathname === "/profile" ? "" : "hidden"}`}>
+        <Link href="/profile/edit" className={`${pathname === "/profile" ? "" : "hidden"}`}>
           <IoMdSettings size={30} color="30355d"/>
-        </div>
+        </Link>
         <div className={`${pathname === "/profile" ? "hidden" : "md:flex"} hidden  ml-8 `}>
           <Link href="/profile" className=" p-0.5 text-gray-800 rounded-full">
             <HiOutlineUserCircle size={30} color="30355d"/>

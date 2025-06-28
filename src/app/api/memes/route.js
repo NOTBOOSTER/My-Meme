@@ -3,7 +3,6 @@ import createConnection from "@/server/database/mysql";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
   try {
     const data = await request.json();
     const limit = parseInt(data.limit);
@@ -21,6 +20,8 @@ export async function POST(request) {
           m.created_at,
           u.username,
           u.avatar_url,
+          u.first_name,
+          u.last_name,
           COUNT(DISTINCT c.id) AS comments,
     COUNT(DISTINCT CASE WHEN r.emoji = 'like' THEN r.id END) AS likes,
     COUNT(DISTINCT CASE WHEN r.emoji = 'dislike' THEN r.id END) AS dislikes,
@@ -31,7 +32,7 @@ export async function POST(request) {
         LEFT JOIN reactions r ON m.id = r.meme_id
         LEFT JOIN comments c ON m.id = c.meme_id
         WHERE m.status = ?
-        GROUP BY m.id, m.caption, m.result_url, m.created_at, u.username, u.avatar_url
+        GROUP BY m.id, m.caption, m.result_url, m.created_at, u.username, u.first_name, u.last_name, u.avatar_url
         ORDER BY m.id DESC
         LIMIT ${limit}
         OFFSET ${offset};
@@ -49,6 +50,8 @@ export async function POST(request) {
           m.created_at,
           u.username,
           u.avatar_url,
+          u.first_name,
+          u.last_name,
           COUNT(DISTINCT c.id) AS comments,
           COUNT(DISTINCT CASE WHEN r.emoji = 'like' THEN r.id END) AS likes,
           COUNT(DISTINCT CASE WHEN r.emoji = 'dislike' THEN r.id END) AS dislikes,
@@ -63,7 +66,7 @@ export async function POST(request) {
         LEFT JOIN reactions r ON m.id = r.meme_id
         LEFT JOIN comments c ON m.id = c.meme_id
         WHERE m.status = ?
-        GROUP BY m.id, m.caption, m.result_url, m.created_at, u.username, u.avatar_url
+        GROUP BY m.id, m.caption, m.result_url, m.created_at, u.username, u.first_name, u.last_name, u.avatar_url
         ORDER BY m.id DESC
         LIMIT ${limit}
         OFFSET ${offset};
