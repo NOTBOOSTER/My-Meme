@@ -35,8 +35,6 @@ export default function Home() {
         body: JSON.stringify({ start: currentOffset, limit }),
       });
       const data = await response.json();
-      console.log(data);
-      
       if (!response.ok) throw new Error(data.error || "Failed to fetch memes");
       setMemes((prevMemes) => [...prevMemes, ...data.memes]);
       setHasMore(data.memes.length === limit);
@@ -187,7 +185,7 @@ export default function Home() {
                 <button
                   onClick={() => handleReaction(meme.id, "dislike")}
                   className={`flex items-center text-gray-600 hover:text-blue-500 transition-colors ${
-                    meme.user_reaction === "dislike" ? "text-blue-500" : ""
+                    meme.user_reaction === "dislike" ? "text-indigo-500" : ""
                   }`}
                   title="Dislike"
                 >

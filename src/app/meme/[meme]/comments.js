@@ -137,6 +137,7 @@ const Comments = ({memeId}) => {
           <div id="sentinel" className="h-10"></div>
         )}
         {isLoading && <div className="text-center py-2">Loading more comments...</div>}
+        {(!isLoading && comments.length === 0) && <div className="flex items-center justify-center">No comments yet</div>}
       </div>
     </div>
   )

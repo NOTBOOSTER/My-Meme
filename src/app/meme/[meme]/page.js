@@ -14,8 +14,10 @@ import {
 } from "react-icons/fa";
 import { IoIosArrowBack, IoIosSend } from "react-icons/io";
 import Comments from "./comments";
+import { useSession } from "next-auth/react";
 
 const Meme = ({ params }) => {
+  const {data: session} = useSession();
   const [memes, setmemes] = useState();
   const router = useRouter();
 
@@ -37,6 +39,67 @@ const Meme = ({ params }) => {
 
     fetchMeme();
   }, [params]);
+
+  const handleReaction = (memeId, reactionType) => {
+      if (!session) return redirect("/auth");
+  
+      const meme = memes.find((m) => m.id === memeId);
+      if (!meme) return;
+  
+      const reactionToColumnMap = {
+        like: "likes",
+        dislike: "dislikes",
+        crying: "crying",
+        happy: "happy",
+      };
+  
+      const updatedCounts = {
+        likes: parseInt(meme.likes) || 0,
+        dislikes: parseInt(meme.dislikes) || 0,
+        happy: parseInt(meme.happy) || 0,
+        crying: parseInt(meme.crying) || 0,
+      };
+  
+      let newReaction;
+  
+      if (meme.user_reaction) {
+        const oldColumnName = reactionToColumnMap[meme.user_reaction];
+        if (oldColumnName) {
+          updatedCounts[oldColumnName] = Math.max(
+            0,
+            updatedCounts[oldColumnName] - 1
+          );
+        }
+      }
+  
+      if (meme.user_reaction === reactionType) {
+        newReaction = null;
+      } else {
+        const newColumnName = reactionToColumnMap[reactionType];
+        if (newColumnName) {
+          updatedCounts[newColumnName] = updatedCounts[newColumnName] + 1;
+          newReaction = reactionType;
+        }
+      }
+  
+      setmemes((prevMemes) =>
+        prevMemes.map((m) =>
+          m.id === memeId
+            ? { ...m, ...updatedCounts, user_reaction: newReaction }
+            : m
+        )
+      );
+  
+      fetch(`/api/meme/reaction`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ memeId, reactionType }),
+      }).catch((error) => {
+        console.error("Failed to update reaction:", error);
+      });
+    };
 
   const handleShare = async (meme) => {
   const url = `${window.location.origin}/meme/${meme.id}`;
@@ -116,7 +179,7 @@ const Meme = ({ params }) => {
             <button
               onClick={() => handleReaction(meme.id, "dislike")}
               className={`flex items-center text-gray-600 hover:text-blue-500 cursor-pointer transition-colors ${
-                meme.user_reaction === "dislike" ? "text-blue-500" : ""
+                meme.user_reaction === "dislike" ? "text-indigo-500" : ""
               }`}
               title="Dislike"
             >
@@ -179,7 +242,7 @@ const Meme = ({ params }) => {
             <button
               onClick={() => handleReaction(meme.id, "dislike")}
               className={`flex items-center text-gray-600 hover:text-blue-500 cursor-pointer transition-colors ${
-                meme.user_reaction === "dislike" ? "text-blue-500" : ""
+                meme.user_reaction === "dislike" ? "text-indigo-500" : ""
               }`}
               title="Dislike"
             >
