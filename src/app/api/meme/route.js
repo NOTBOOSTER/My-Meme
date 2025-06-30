@@ -18,6 +18,8 @@ export async function POST(request) {
               m.result_url,
               m.created_at,
               u.username,
+              u.first_name,
+              u.last_name,
               u.avatar_url,
               COUNT(DISTINCT c.id) AS comments,
               COUNT(DISTINCT CASE WHEN r.emoji = 'like' THEN r.id END) AS likes,
@@ -29,7 +31,7 @@ export async function POST(request) {
             LEFT JOIN reactions r ON m.id = r.meme_id
             LEFT JOIN comments c ON m.id = c.meme_id
             WHERE m.id = ?
-            GROUP BY m.id, m.caption, m.result_url, m.created_at, u.username, u.avatar_url
+            GROUP BY m.id, m.caption, m.result_url, m.created_at, u.username, u.first_name, u.last_name, u.avatar_url
           `,
       [data]
     );
@@ -43,6 +45,8 @@ export async function POST(request) {
               m.result_url,
               m.created_at,
               u.username,
+              u.first_name,
+              u.last_name,
               u.avatar_url,
               COUNT(DISTINCT c.id) AS comments,
     COUNT(DISTINCT CASE WHEN r.emoji = 'like' THEN r.id END) AS likes,
@@ -58,7 +62,7 @@ export async function POST(request) {
             LEFT JOIN reactions r ON m.id = r.meme_id
             LEFT JOIN comments c ON m.id = c.meme_id
             WHERE m.id = ?
-            GROUP BY m.id, m.caption, m.result_url, m.created_at, u.username, u.avatar_url
+            GROUP BY m.id, m.caption, m.result_url, m.created_at, u.username, u.first_name, u.last_name, u.avatar_url
           `,
       [session.user.id, data]
     );

@@ -96,6 +96,12 @@ const Comments = ({memeId}) => {
     }
   }, [memeId, offset, hasMore]);
 
+  const handleEnterKey = (e) => {
+    if (e.key === "Enter") {
+      submitComment();
+    }
+  };
+
   return (
     <div className="w-full h-screen">
       <div className="flex text-xl font-semibold border-b-2 border-gray-300 w-full pb-2">
@@ -107,6 +113,7 @@ const Comments = ({memeId}) => {
           placeholder="Comment" 
           className="p-1 pl-5 bg-purple-50 rounded-lg text-black w-full border-purple-200 border-2" 
           ref={comment} 
+          onKeyDown={handleEnterKey}
         />
         <button onClick={submitComment} className="absolute right-2 cursor-pointer">
           <IoMdSend size={20} color="30355d"/>

@@ -15,9 +15,10 @@ import {
 import { IoIosArrowBack, IoIosSend } from "react-icons/io";
 import Comments from "./comments";
 import { useSession } from "next-auth/react";
+import { Button } from "@/components/ui/button";
 
 const Meme = ({ params }) => {
-  const {data: session} = useSession();
+  const { data: session } = useSession();
   const [memes, setmemes] = useState();
   const router = useRouter();
 
@@ -41,83 +42,83 @@ const Meme = ({ params }) => {
   }, [params]);
 
   const handleReaction = (memeId, reactionType) => {
-      if (!session) return redirect("/auth");
-  
-      const meme = memes.find((m) => m.id === memeId);
-      if (!meme) return;
-  
-      const reactionToColumnMap = {
-        like: "likes",
-        dislike: "dislikes",
-        crying: "crying",
-        happy: "happy",
-      };
-  
-      const updatedCounts = {
-        likes: parseInt(meme.likes) || 0,
-        dislikes: parseInt(meme.dislikes) || 0,
-        happy: parseInt(meme.happy) || 0,
-        crying: parseInt(meme.crying) || 0,
-      };
-  
-      let newReaction;
-  
-      if (meme.user_reaction) {
-        const oldColumnName = reactionToColumnMap[meme.user_reaction];
-        if (oldColumnName) {
-          updatedCounts[oldColumnName] = Math.max(
-            0,
-            updatedCounts[oldColumnName] - 1
-          );
-        }
-      }
-  
-      if (meme.user_reaction === reactionType) {
-        newReaction = null;
-      } else {
-        const newColumnName = reactionToColumnMap[reactionType];
-        if (newColumnName) {
-          updatedCounts[newColumnName] = updatedCounts[newColumnName] + 1;
-          newReaction = reactionType;
-        }
-      }
-  
-      setmemes((prevMemes) =>
-        prevMemes.map((m) =>
-          m.id === memeId
-            ? { ...m, ...updatedCounts, user_reaction: newReaction }
-            : m
-        )
-      );
-  
-      fetch(`/api/meme/reaction`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ memeId, reactionType }),
-      }).catch((error) => {
-        console.error("Failed to update reaction:", error);
-      });
+    if (!session) return redirect("/auth");
+
+    const meme = memes.find((m) => m.id === memeId);
+    if (!meme) return;
+
+    const reactionToColumnMap = {
+      like: "likes",
+      dislike: "dislikes",
+      crying: "crying",
+      happy: "happy",
     };
 
+    const updatedCounts = {
+      likes: parseInt(meme.likes) || 0,
+      dislikes: parseInt(meme.dislikes) || 0,
+      happy: parseInt(meme.happy) || 0,
+      crying: parseInt(meme.crying) || 0,
+    };
+
+    let newReaction;
+
+    if (meme.user_reaction) {
+      const oldColumnName = reactionToColumnMap[meme.user_reaction];
+      if (oldColumnName) {
+        updatedCounts[oldColumnName] = Math.max(
+          0,
+          updatedCounts[oldColumnName] - 1
+        );
+      }
+    }
+
+    if (meme.user_reaction === reactionType) {
+      newReaction = null;
+    } else {
+      const newColumnName = reactionToColumnMap[reactionType];
+      if (newColumnName) {
+        updatedCounts[newColumnName] = updatedCounts[newColumnName] + 1;
+        newReaction = reactionType;
+      }
+    }
+
+    setmemes((prevMemes) =>
+      prevMemes.map((m) =>
+        m.id === memeId
+          ? { ...m, ...updatedCounts, user_reaction: newReaction }
+          : m
+      )
+    );
+
+    fetch(`/api/meme/reaction`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ memeId, reactionType }),
+    }).catch((error) => {
+      console.error("Failed to update reaction:", error);
+    });
+  };
+
   const handleShare = async (meme) => {
-  const url = `${window.location.origin}/meme/${meme.id}`;
-  try {
-    await navigator.clipboard.writeText(url);
-    setCopiedMemes(prev => ({ ...prev, [meme.id]: true }));
-    setTimeout(() => {
-      setCopiedMemes(prev => ({ ...prev, [meme.id]: false }));
-    }, 2000);
-  } catch (error) {
-    const textArea = document.createElement('textarea');
-    textArea.value = url;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-  }
-};
+    const url = `${window.location.origin}/meme/${meme.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopiedMemes((prev) => ({ ...prev, [meme.id]: true }));
+      setTimeout(() => {
+        setCopiedMemes((prev) => ({ ...prev, [meme.id]: false }));
+      }, 2000);
+    } catch (error) {
+      const textArea = document.createElement("textarea");
+      textArea.value = url;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textArea);
+    }
+  };
 
   if (memes && memes.length === 0) {
     notFound();
@@ -127,15 +128,28 @@ const Meme = ({ params }) => {
       <div className="flex justify-between md:px-8 md:flex-row flex-col mb-10 md:mb-1">
         <div className="rounded-lg overflow-hidden transition-shadow duration-300 flex flex-col w-full md:bg-white ">
           <div className="flex justify-between p-8">
-            <Link title="back" href="/" className="p-1 rounded-full hover:bg-violet-200">
+            <Link
+              title="back"
+              href="/"
+              className="p-1 rounded-full hover:bg-violet-200"
+            >
               <IoIosArrowBack size={30} />
             </Link>
-            <button title="shere" onClick={() => handleShare(meme)} className="p-1 rounded-full hover:bg-violet-200 cursor-pointer">
+            <button
+              title="shere"
+              onClick={() => handleShare(meme)}
+              className="p-1 rounded-full hover:bg-violet-200 cursor-pointer"
+            >
               <IoIosSend size={30} />
             </button>
           </div>
 
-          <div className="flex items-center p-4 md:hidden">
+          <Link
+            href={`/profile/${
+              meme.username === session?.user?.username ? "" : meme.username
+            }`}
+            className="flex items-center p-4 md:hidden"
+          >
             <Image
               src={meme.avatar_url}
               width={40}
@@ -143,10 +157,15 @@ const Meme = ({ params }) => {
               alt={`${meme.username}'s profile picture`}
               className="rounded-full object-cover"
             />
-            <span className="ml-3 font-semibold text-gray-900">
-              {meme.username}
-            </span>
-          </div>
+            <div className="flex flex-col">
+              <span className="ml-3 font-semibold text-gray-900 text-sm">
+                {meme.first_name + " " + (meme.last_name ? meme.last_name : "")}
+              </span>
+              <span className="ml-3 font-semibold text-gray-500 text-[12px]">
+                {meme.username}
+              </span>
+            </div>
+          </Link>
 
           <div className="p-4 flex-grow hidden md:flex">
             <p className="text-gray-700 text-sm line-clamp-2">{meme.caption}</p>
@@ -212,20 +231,34 @@ const Meme = ({ params }) => {
           </div>
         </div>
 
-{/* some shit here */}
+        {/* some shit here */}
 
         <div className="w-full ">
-          <div className="md:flex items-center p-4 hidden mx-10">
-            <Image
-              src={meme.avatar_url}
-              width={40}
-              height={40}
-              alt={`${meme.username}'s profile picture`}
-              className="rounded-full object-cover"
-            />
-            <span className="ml-3 font-semibold text-gray-900">
-              {meme.username}
-            </span>
+          <div className="md:flex justify-between items-center mx-10 p-4 rounded-3xl border-t border-gray-200 hidden">
+            <Link
+              href={`/profile/${
+                meme.username === session?.user?.username ? "" : meme.username
+              }`}
+              className="md:flex"
+            >
+              <Image
+                src={meme.avatar_url}
+                width={40}
+                height={40}
+                alt={`${meme.username}'s profile picture`}
+                className="rounded-full object-cover"
+              />
+              <div className="flex flex-col">
+                <span className="ml-3 font-semibold text-gray-900 text-sm">
+                  {meme.first_name +
+                    " " +
+                    (meme.last_name ? meme.last_name : "")}
+                </span>
+                <span className="ml-3 font-semibold text-gray-500 text-[12px]">
+                  {meme.username}
+                </span>
+              </div>
+            </Link>
           </div>
 
           <div className="md:flex justify-between items-center mx-10 p-4 rounded-3xl border-t border-gray-200 hidden  bg-white">
@@ -246,7 +279,7 @@ const Meme = ({ params }) => {
               }`}
               title="Dislike"
             >
-              <FaThumbsDown size={30}/>
+              <FaThumbsDown size={30} />
               <span className="ml-1 text-sm">{meme.dislikes}</span>
             </button>
             <button
@@ -271,7 +304,7 @@ const Meme = ({ params }) => {
             </button>
           </div>
           <div className="md:flex mx-10 p-4 rounded-3xl border-t border-gray-200 hidden h-screen bg-white mb-48 md:mb-2 my-3 ">
-            <Comments memeId={meme.id}/>
+            <Comments memeId={meme.id} />
           </div>
         </div>
       </div>
