@@ -30,12 +30,12 @@ const Login = () => {
             Login With Google
         </span>
     </button>
-    {/* <button className="bg-gradient-to-r from-indigo-500 to-indigo-400 rounded-full flex text-white p-2 justify-center items-center gap-3 px-5 mt-8 cursor-pointer" onClick={() => signIn("discord")}>
+    <button className="bg-gradient-to-r from-indigo-500 to-indigo-400 rounded-full flex text-white p-2 justify-center items-center gap-3 px-5 mt-8 cursor-pointer" onClick={() => signIn("discord")}>
         <FaDiscord size={30}/>
         <span className="">
             Login With Discord
         </span>
-    </button> */}
+    </button>
   </div>;
 };
 

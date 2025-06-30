@@ -5,7 +5,7 @@ import Google from "next-auth/providers/google";
 import Discord from "next-auth/providers/discord";
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
-  providers: [GitHub, Google],
+  providers: [GitHub, Google, Discord],
   secret: process.env.AUTH_SECRET,
   callbacks: {
     async signIn({ user }) {

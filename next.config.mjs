@@ -3,7 +3,8 @@ const nextConfig = {
   images: {
     domains: [
     'avatars.githubusercontent.com',
-    'res.cloudinary.com'
+    'res.cloudinary.com',
+    'cdn.discordapp.com'
   ],
   },
 };
