@@ -17,12 +17,11 @@ export default function RootLayout({ children }) {
         <link rel="icon" href="/logo.svg" sizes="any" />
       </head>
       <body className="bg-gradient-to-b from-indigo-100 to-purple-50 min-h-screen">
-        
         <SessionWrapper>
           <Header />
-        {children}
-        <Footer />
-        <Toaster />
+          {children}
+          <Footer />
+          <Toaster />
         </SessionWrapper>
       </body>
     </html>
