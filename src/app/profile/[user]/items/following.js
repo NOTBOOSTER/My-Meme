@@ -103,17 +103,9 @@ const Following = ({userId}) => {
     <div className="w-full px-0">
       <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 2xl:grid-cols-12 3xl:grid-cols-15 gap-1 sm:gap-2">
         {followings.map((following) => (
-        <Link key={following.id} href={`/profile/${following.username}`}>
-          <div className="">
-            <Image
-              src={following.avatar_url}
-              alt={following.username}
-              width={200}
-              height={200}
-              className="w-full h-full object-cover rounded-full"
-            />
+          <div key={following.id} className="relative">
+            jj
           </div>
-        </Link>
         ))}
       </div>
 
