@@ -48,6 +48,7 @@ export async function POST(request) {
           m.caption,
           m.result_url,
           m.created_at,
+          u.id as user_id,
           u.username,
           u.avatar_url,
           u.first_name,
@@ -60,18 +61,22 @@ export async function POST(request) {
           (SELECT r2.emoji 
            FROM reactions r2 
            WHERE r2.meme_id = m.id AND r2.user_id = ? 
-           LIMIT 1) AS user_reaction
+           LIMIT 1) AS user_reaction,
+          CASE 
+            WHEN u.id = ? THEN 'own_post'
+            WHEN (SELECT COUNT(*) FROM followers f WHERE f.follower_id = ? AND f.following_id = u.id) > 0 THEN 'following'
+            ELSE 'not_following'
+          END AS follow_status
         FROM memes m
         INNER JOIN users u ON m.user_id = u.id
         LEFT JOIN reactions r ON m.id = r.meme_id
         LEFT JOIN comments c ON m.id = c.meme_id
         WHERE m.status = ?
-        GROUP BY m.id, m.caption, m.result_url, m.created_at, u.username, u.first_name, u.last_name, u.avatar_url
+        GROUP BY m.id, m.caption, m.result_url, m.created_at, u.id, u.username, u.first_name, u.last_name, u.avatar_url
         ORDER BY m.id DESC
-        LIMIT ${limit}
-        OFFSET ${offset};
+        LIMIT ${limit} OFFSET ${offset};
       `,
-        [session.user.id, "completed"]
+        [session.user.id, session.user.id, session.user.id, "completed"]
       );
       return NextResponse.json({ memes });
     }

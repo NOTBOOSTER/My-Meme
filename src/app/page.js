@@ -35,6 +35,8 @@ export default function Home() {
         body: JSON.stringify({ start: currentOffset, limit }),
       });
       const data = await response.json();
+      console.log(data);
+
       if (!response.ok) throw new Error(data.error || "Failed to fetch memes");
       setMemes((prevMemes) => [...prevMemes, ...data.memes]);
       setHasMore(data.memes.length === limit);
@@ -127,6 +129,24 @@ export default function Home() {
     });
   };
 
+  const handleFollow = async (username) => {
+    await fetch(`/api/user/follow`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username }),
+    }).catch((error) => {
+      console.error("Failed to follow meme:", error);
+    });
+    
+    setMemes((prevMemes) =>
+      prevMemes.map((m) =>
+        m.username === username && m.follow_status !== "following" ? { ...m, follow_status: "following" } : (m.follow_status === "following" ? { ...m, follow_status: "not_following" } : m)
+      )
+    );
+  };
+
   return (
     <div className="min-h-screen py-6 px-4 sm:px-6 lg:px-8 h-full">
       <div className="max-w-7xl mx-auto">
@@ -137,7 +157,14 @@ export default function Home() {
               className="bg-gradient-to-b from-sky-100 to-emerald-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col"
             >
               <div className="flex justify-between items-center mx-4">
-                <Link href={`/profile/${meme.username === session?.user?.username ? "" : meme.username}`} className="flex items-center py-4">
+                <Link
+                  href={`/profile/${
+                    meme.username === session?.user?.username
+                      ? ""
+                      : meme.username
+                  }`}
+                  className="flex items-center py-4"
+                >
                   <Image
                     src={meme.avatar_url}
                     width={40}
@@ -146,19 +173,39 @@ export default function Home() {
                     className="rounded-full object-cover"
                   />
                   <div className="flex flex-col">
-                  <span className="ml-3 font-semibold text-gray-900 text-sm">
-                    {meme.first_name + " " + (meme.last_name ? meme.last_name : "")}
-                  </span>
-                  <span className="ml-3 font-semibold text-gray-500 text-[12px]">
-                    {meme.username}
-                  </span>
+                    <span className="ml-3 font-semibold text-gray-900 text-sm">
+                      {meme.first_name +
+                        " " +
+                        (meme.last_name ? meme.last_name : "")}
+                    </span>
+                    <span className="ml-3 font-semibold text-gray-500 text-[12px]">
+                      {meme.username}
+                    </span>
                   </div>
-                  
-                  
                 </Link>
-                {/* <button className=" text-gray-600 hover:text-gray-800 transition-colors">
-                    <FaRegShareSquare size={20} />
-                  </button> */}
+                <div className="flex items-center">
+                  {meme?.follow_status ? (
+                    meme?.follow_status === "own_post" ? (
+                      ""
+                    ) : meme?.follow_status === "following" ? (
+                      <button
+                        onClick={() => handleFollow(meme.username)}
+                        className="bg-violet-300 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-530 cursor-pointer"
+                      >
+                        Unfollow
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleFollow(meme.username)}
+                        className="bg-violet-300 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-300 cursor-pointer"
+                      >
+                        Follow
+                      </button>
+                    )
+                  ) : (
+                    ""
+                  )}
+                </div>
               </div>
 
               <Link href={`/meme/${meme.id}`}>

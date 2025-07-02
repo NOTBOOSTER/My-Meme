@@ -16,13 +16,13 @@ const Statics = ({userData}) => {
           <TabsTrigger value="following" className="data-[state=active]:border-b-4 data-[state=active]:border-gray-800 data-[state=active]:rounded-none data-[state=active]:bg-none data-[state=active]:shadow-none">
             <div className="flex flex-col items-center pb-3">
               <span className="font-bold">Following</span>
-              <span className="font-semibold">{userData.Following || 0}</span>
+              <span className="font-semibold">{userData.following || 0}</span>
             </div>
           </TabsTrigger>
           <TabsTrigger value="followers" className="data-[state=active]:border-b-4 data-[state=active]:border-gray-800 data-[state=active]:rounded-none data-[state=active]:bg-none data-[state=active]:shadow-none">
             <div className="flex flex-col items-center pb-3">
               <span className="font-bold">Followers</span>
-              <span className="font-semibold">{userData.Followers || 0}</span>
+              <span className="font-semibold">{userData.followers || 0}</span>
             </div>
           </TabsTrigger>
         </TabsList>
@@ -30,7 +30,7 @@ const Statics = ({userData}) => {
           <Memes userId={userData.id}/>
         </TabsContent>
         <TabsContent value="following" className="pt-18">
-          <Following />
+          <Following userId={userData.id}/>
         </TabsContent>
         <TabsContent value="followers"className="pt-18">
           <Followers />
