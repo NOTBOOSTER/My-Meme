@@ -30,10 +30,10 @@ const Statics = ({userData}) => {
           <Memes userId={userData.id}/>
         </TabsContent>
         <TabsContent value="following" className="pt-18">
-          <Following />
+          <Following userId={userData.id}/>
         </TabsContent>
         <TabsContent value="followers"className="pt-18">
-          <Followers />
+          <Followers userId={userData.id}/>
         </TabsContent>
       </Tabs>
     </div>

@@ -33,7 +33,7 @@ const Statics = ({userData}) => {
           <Following userId={userData.id}/>
         </TabsContent>
         <TabsContent value="followers"className="pt-18">
-          <Followers />
+          <Followers userId={userData.id}/>
         </TabsContent>
       </Tabs>
     </div>

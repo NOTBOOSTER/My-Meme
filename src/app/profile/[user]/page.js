@@ -27,6 +27,7 @@ const Profile = ({params}) => {
           body: JSON.stringify(user),
         });
         const data = await response.json();
+        
         setUserData(data);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -35,6 +36,22 @@ const Profile = ({params}) => {
     fetchUserData();
 
     }, [params]);
+
+    const handleFollow = async (username) => {
+    await fetch(`/api/user/follow`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username }),
+    }).catch((error) => {
+      console.error("Failed to follow meme:", error);
+    });
+    
+    setUserData((prevUserData) =>
+      prevUserData.isfollowing ? { ...prevUserData, isfollowing: false } : { ...prevUserData, isfollowing: true }
+    );
+  };
  
 
 
@@ -56,6 +73,7 @@ const Profile = ({params}) => {
       <div className="flex flex-col justify-center items-center">
         <span className="font-semibold">{userData.name || "No Name"}</span>
         <span className="text-sm">{userData.username || "@noname"}</span>
+        {status === "unauthenticated" ? "" :(userData?.isfollowing ? <button onClick={() => {handleFollow(userData.username)}} className="border border-violet-300 rounded-md px-6 font-semibold text-gray-700 m-5 py-2 text-md">Unfollow</button> : <button onClick={() => {handleFollow(userData.username)}} className="border border-violet-300 rounded-md px-6 font-semibold text-gray-700 m-5 py-2 text-md">Follow</button>)}
       </div>
       <Statics userData={userData}/>
     </div>

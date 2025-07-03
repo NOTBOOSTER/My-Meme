@@ -2,8 +2,10 @@
 
 import { NextResponse } from "next/server";
 import createConnection from "@/server/database/mysql";
+import { auth } from "@/lib/auth";
 
 export async function POST(request) {
+  const session = await auth();
   const userDetails = {};
   try {
     const data = await request.json();
@@ -15,6 +17,17 @@ export async function POST(request) {
     );
     if (user.length === 0) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+    if (session) {
+      const [follow] = await connection.execute(
+        `SELECT * FROM followers WHERE follower_id = ? AND following_id = ?`,
+        [session.user.id, user[0].id]
+      );
+      if (follow.length > 0) {
+        userDetails.isfollowing = true;
+      } else {
+        userDetails.isfollowing = false;
+      }
     }
 
     userDetails.name =

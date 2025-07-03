@@ -102,11 +102,11 @@ const Following = ({userId}) => {
 
   return (
     <div className="w-full px-0">
-      <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 2xl:grid-cols-12 3xl:grid-cols-15 gap-1 sm:gap-2">
+      <div className="flex flex-row flex-wrap items-center justify-center gap-2">
         {followings.map((following) => (
-          <div key={following.id} className="flex flex-row justify-between min-w-96 px-4 py-2">
+          <div key={following.id} className="flex flex-row justify-between min-w-80 px-4 py-2 border-2 rounded-md  border-violet-200">
             <Link href={`/profile/${following.username}`} className="flex flex-row gap-2 items-center">
-              <div className="">
+              <div className="rounded-full z-10 overflow-hidden">
                 <Image
                   src={following.avatar_url}
                   alt={following.username}
@@ -119,9 +119,7 @@ const Following = ({userId}) => {
                 <p className="text-xs">{following?.username}</p>
               </div>
             </Link>
-            <button className="text-gray-700 hover:text-gray-900">
-              <IoIosClose size={40}/>
-            </button>
+            
           </div>
         ))}
       </div>

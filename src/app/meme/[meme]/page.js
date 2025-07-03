@@ -14,8 +14,7 @@ import {
 } from "react-icons/fa";
 import { IoIosArrowBack, IoIosSend } from "react-icons/io";
 import Comments from "./comments";
-import { useSession } from "next-auth/react";
-import { Button } from "@/components/ui/button";
+import { useSession } from "next-auth/react"
 
 const Meme = ({ params }) => {
   const { data: session } = useSession();
