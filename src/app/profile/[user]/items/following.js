@@ -2,6 +2,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState, useEffect, useCallback } from 'react'
+import { IoIosClose } from "react-icons/io";
 
 const Following = ({userId}) => {
   const [followings, setfollowings] = useState([])
@@ -103,8 +104,24 @@ const Following = ({userId}) => {
     <div className="w-full px-0">
       <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 2xl:grid-cols-12 3xl:grid-cols-15 gap-1 sm:gap-2">
         {followings.map((following) => (
-          <div key={following.id} className="relative">
-            jj
+          <div key={following.id} className="flex flex-row justify-between min-w-96 px-4 py-2">
+            <Link href={`/profile/${following.username}`} className="flex flex-row gap-2 items-center">
+              <div className="">
+                <Image
+                  src={following.avatar_url}
+                  alt={following.username}
+                  width={50}
+                  height={50}
+                />
+              </div>
+              <div className="flex flex-col items-center">
+                <p className="text-sm font-semibold">{following?.first_name} {following?.last_name ? following?.last_name : ""}</p>
+                <p className="text-xs">{following?.username}</p>
+              </div>
+            </Link>
+            <button className="text-gray-700 hover:text-gray-900">
+              <IoIosClose size={40}/>
+            </button>
           </div>
         ))}
       </div>

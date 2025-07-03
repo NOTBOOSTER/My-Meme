@@ -97,7 +97,8 @@ const Meme = ({ params }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ memeId, reactionType }),
-    }).catch((error) => {
+    }).then((res) => res.json())
+    .catch((error) => {
       console.error("Failed to update reaction:", error);
     });
   };
@@ -118,6 +119,24 @@ const Meme = ({ params }) => {
       document.execCommand("copy");
       document.body.removeChild(textArea);
     }
+  };
+
+  const handleFollow = async (username) => {
+    await fetch(`/api/user/follow`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username }),
+    }).catch((error) => {
+      console.error("Failed to follow meme:", error);
+    });
+    
+    setmemes((prevMemes) =>
+      prevMemes.map((m) =>
+        m.username === username && m.follow_status !== "following" ? { ...m, follow_status: "following" } : (m.follow_status === "following" ? { ...m, follow_status: "not_following" } : m)
+      )
+    );
   };
 
   if (memes && memes.length === 0) {
@@ -144,6 +163,7 @@ const Meme = ({ params }) => {
             </button>
           </div>
 
+          <div className="flex items-center p-4 md:hidden justify-between">
           <Link
             href={`/profile/${
               meme.username === session?.user?.username ? "" : meme.username
@@ -166,6 +186,31 @@ const Meme = ({ params }) => {
               </span>
             </div>
           </Link>
+          <div className="flex items-center">
+                  {meme?.follow_status ? (
+                    meme?.follow_status === "own_post" ? (
+                      ""
+                    ) : meme?.follow_status === "following" ? (
+                      <button
+                        onClick={() => handleFollow(meme.username)}
+                        className="rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-530 cursor-pointer"
+                      >
+                        Unfollow
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleFollow(meme.username)}
+                        className="bg-violet-100 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-300 cursor-pointer"
+                      >
+                        Follow
+                      </button>
+                    )
+                  ) : (
+                    ""
+                  )}
+                </div>
+          </div>
+          
 
           <div className="p-4 flex-grow hidden md:flex">
             <p className="text-gray-700 text-sm line-clamp-2">{meme.caption}</p>
@@ -259,6 +304,29 @@ const Meme = ({ params }) => {
                 </span>
               </div>
             </Link>
+            <div className="flex items-center">
+                  {meme?.follow_status ? (
+                    meme?.follow_status === "own_post" ? (
+                      ""
+                    ) : meme?.follow_status === "following" ? (
+                      <button
+                        onClick={() => handleFollow(meme.username)}
+                        className="rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-530 cursor-pointer"
+                      >
+                        Unfollow
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleFollow(meme.username)}
+                        className="bg-violet-100 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-300 cursor-pointer"
+                      >
+                        Follow
+                      </button>
+                    )
+                  ) : (
+                    ""
+                  )}
+                </div>
           </div>
 
           <div className="md:flex justify-between items-center mx-10 p-4 rounded-3xl border-t border-gray-200 hidden  bg-white">

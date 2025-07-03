@@ -6,6 +6,11 @@ export async function POST(request) {
     const limit = parseInt(data.limit);
     const offset = parseInt(data.offset);
     const connection = await createConnection();
-    const [comments] = await connection.execute(`SELECT c.id, c.content, c.created_at, u.username, u.avatar_url FROM comments c INNER JOIN users u ON c.user_id = u.id WHERE meme_id = ? ORDER BY c.id DESC  LIMIT ${limit} OFFSET ${offset}`, [data.memeId]);
-    return NextResponse.json({ comments });
+    try {
+        const [comments] = await connection.execute(`SELECT c.id, c.content, c.created_at, u.username, u.avatar_url FROM comments c INNER JOIN users u ON c.user_id = u.id WHERE meme_id = ? ORDER BY c.id DESC  LIMIT ${limit} OFFSET ${offset}`, [data.memeId]);
+        return NextResponse.json({ comments });
+    } catch (e) {
+        console.log(e);
+        return NextResponse.json({ comments: [] });
+    }
 }

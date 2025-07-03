@@ -190,14 +190,14 @@ export default function Home() {
                     ) : meme?.follow_status === "following" ? (
                       <button
                         onClick={() => handleFollow(meme.username)}
-                        className="bg-violet-300 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-530 cursor-pointer"
+                        className="rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-530 cursor-pointer"
                       >
                         Unfollow
                       </button>
                     ) : (
                       <button
                         onClick={() => handleFollow(meme.username)}
-                        className="bg-violet-300 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-300 cursor-pointer"
+                        className="bg-violet-100 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-300 cursor-pointer"
                       >
                         Follow
                       </button>

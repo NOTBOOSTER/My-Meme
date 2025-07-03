@@ -54,9 +54,14 @@ export async function POST(request) {
     COUNT(DISTINCT CASE WHEN r.emoji = 'happy' THEN r.id END) AS happy,
     COUNT(DISTINCT CASE WHEN r.emoji = 'crying' THEN r.id END) AS crying,
               (SELECT r2.emoji 
-               FROM reactions r2 
-               WHERE r2.meme_id = m.id AND r2.user_id = ? 
-               LIMIT 1) AS user_reaction
+           FROM reactions r2 
+           WHERE r2.meme_id = m.id AND r2.user_id = ? 
+           LIMIT 1) AS user_reaction,
+          CASE 
+            WHEN u.id = ? THEN 'own_post'
+            WHEN (SELECT COUNT(*) FROM followers f WHERE f.follower_id = ? AND f.following_id = u.id) > 0 THEN 'following'
+            ELSE 'not_following'
+          END AS follow_status
             FROM memes m
             INNER JOIN users u ON m.user_id = u.id
             LEFT JOIN reactions r ON m.id = r.meme_id
@@ -64,7 +69,7 @@ export async function POST(request) {
             WHERE m.id = ?
             GROUP BY m.id, m.caption, m.result_url, m.created_at, u.username, u.first_name, u.last_name, u.avatar_url
           `,
-      [session.user.id, data]
+      [session.user.id, session.user.id, session.user.id, data]
     );
     return NextResponse.json({ meme });
   }
