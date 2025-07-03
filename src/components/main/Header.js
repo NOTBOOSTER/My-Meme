@@ -8,6 +8,7 @@ import Link from "next/link";
 import { usePathname } from 'next/navigation'
 import { IoMdSettings } from "react-icons/io";
 import { signOut } from "next-auth/react";
+import { BsGithub } from "react-icons/bs";
 
 const Header = () => {
   const pathname = usePathname()
@@ -29,7 +30,7 @@ const Header = () => {
           <IoSearchOutline size={25} />
         </div>
         <div className="flex ">
-          <Link href="/post/create" className="bg-violet-300 p-0.5 text-gray-800 rounded-full border border-violet-400">
+          <Link href="/post/create" className="hidden md:flex bg-violet-300 p-0.5 text-gray-800 rounded-full border border-violet-400">
             <IoAddSharp size={30} />
           </Link>
         </div>
@@ -41,6 +42,9 @@ const Header = () => {
             <HiOutlineUserCircle size={30} color="30355d"/>
           </Link>
         </div>
+        <Link href="https://github.com/NOTBOOSTER/" className="hidden md:flex">
+          <BsGithub size={25} color="30355d"/>
+        </Link>
         <button onClick={() => signOut()} className={`${pathname === "/profile" ? "flex" : "hidden"} md:ml-8 `}>
             <IoLogOut size={30} color="30355d"/>
         </button>

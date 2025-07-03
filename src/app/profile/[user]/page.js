@@ -63,6 +63,10 @@ const Profile = ({params}) => {
     notFound();
   }
 
+  if (session?.user.username === userData.username) {
+    redirect("/profile");
+  }
+
   return (
     <div className="flex items-center justify-center flex-col gap-3">
       <div className=" relative rounded-full  border-4 border-violet-300">
