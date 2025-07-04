@@ -12,9 +12,9 @@ import {
   FaSadCry,
   FaComment,
 } from "react-icons/fa";
-import { IoIosArrowBack, IoIosSend } from "react-icons/io";
+import { IoIosArrowBack, IoIosDownload, IoIosSend } from "react-icons/io";
 import Comments from "./comments";
-import { useSession } from "next-auth/react"
+import { useSession } from "next-auth/react";
 
 const Meme = ({ params }) => {
   const { data: session } = useSession();
@@ -96,10 +96,11 @@ const Meme = ({ params }) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ memeId, reactionType }),
-    }).then((res) => res.json())
-    .catch((error) => {
-      console.error("Failed to update reaction:", error);
-    });
+    })
+      .then((res) => res.json())
+      .catch((error) => {
+        console.error("Failed to update reaction:", error);
+      });
   };
 
   const handleShare = async (meme) => {
@@ -130,13 +131,44 @@ const Meme = ({ params }) => {
     }).catch((error) => {
       console.error("Failed to follow meme:", error);
     });
-    
+
     setmemes((prevMemes) =>
       prevMemes.map((m) =>
-        m.username === username && m.follow_status !== "following" ? { ...m, follow_status: "following" } : (m.follow_status === "following" ? { ...m, follow_status: "not_following" } : m)
+        m.username === username && m.follow_status !== "following"
+          ? { ...m, follow_status: "following" }
+          : m.follow_status === "following"
+          ? { ...m, follow_status: "not_following" }
+          : m
       )
     );
   };
+
+  const handleDownload = async (meme) => {
+  try {
+    const response = await fetch(meme.result_url, {
+      mode: "cors"
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch image.');
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = "meme.png";
+    document.body.appendChild(link);
+    link.click();
+
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error downloading image:", error);
+  }
+};
+
 
   if (memes && memes.length === 0) {
     notFound();
@@ -153,63 +185,73 @@ const Meme = ({ params }) => {
             >
               <IoIosArrowBack size={30} />
             </Link>
-            <button
-              title="shere"
-              onClick={() => handleShare(meme)}
-              className="p-1 rounded-full hover:bg-violet-200 cursor-pointer"
-            >
-              <IoIosSend size={30} />
-            </button>
+            <div className="flex items-center">
+              <button
+                title="shere"
+                onClick={() => handleShare(meme)}
+                className="p-1 rounded-full hover:bg-violet-200 cursor-pointer"
+              >
+                <IoIosSend size={30} />
+              </button>
+              <button
+                title="download"
+                onClick={() => handleDownload(meme)}
+                className="p-1 rounded-full hover:bg-violet-200 cursor-pointer"
+              >
+                <IoIosDownload size={30} />
+              </button>
+            </div>
           </div>
 
           <div className="flex items-center p-4 md:hidden justify-between">
-          <Link
-            href={`/profile/${
-              meme.username === session?.user?.username ? "" : meme.username
-            }`}
-            className="flex items-center p-4 md:hidden"
-          >
-            <Image
-              src={meme.avatar_url}
-              width={40}
-              height={40}
-              alt={`${meme.username}'s profile picture`}
-              className="rounded-full object-cover"
-            />
-            <div className="flex flex-col">
-              <span className="ml-3 font-semibold text-gray-900 text-sm">
-                {meme.first_name + " " + (meme.last_name ? meme.last_name : "")}
-              </span>
-              <span className="ml-3 font-semibold text-gray-500 text-[12px]">
-                {meme.username}
-              </span>
+            <Link
+              href={`/profile/${
+                meme.username === session?.user?.username ? "" : meme.username
+              }`}
+              className="flex items-center p-4 md:hidden"
+            >
+              <Image
+                src={meme.avatar_url}
+                width={40}
+                height={40}
+                alt={`${meme.username}'s profile picture`}
+                className="rounded-full object-cover"
+              />
+              <div className="flex flex-col">
+                <span className="ml-3 font-semibold text-gray-900 text-sm">
+                  {meme.first_name +
+                    " " +
+                    (meme.last_name ? meme.last_name : "")}
+                </span>
+                <span className="ml-3 font-semibold text-gray-500 text-[12px]">
+                  {meme.username}
+                </span>
+              </div>
+            </Link>
+            <div className="flex items-center">
+              {meme?.follow_status ? (
+                meme?.follow_status === "own_post" ? (
+                  ""
+                ) : meme?.follow_status === "following" ? (
+                  <button
+                    onClick={() => handleFollow(meme.username)}
+                    className="rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-530 cursor-pointer"
+                  >
+                    Unfollow
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleFollow(meme.username)}
+                    className="bg-violet-100 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-300 cursor-pointer"
+                  >
+                    Follow
+                  </button>
+                )
+              ) : (
+                ""
+              )}
             </div>
-          </Link>
-          <div className="flex items-center">
-                  {meme?.follow_status ? (
-                    meme?.follow_status === "own_post" ? (
-                      ""
-                    ) : meme?.follow_status === "following" ? (
-                      <button
-                        onClick={() => handleFollow(meme.username)}
-                        className="rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-530 cursor-pointer"
-                      >
-                        Unfollow
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleFollow(meme.username)}
-                        className="bg-violet-100 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-300 cursor-pointer"
-                      >
-                        Follow
-                      </button>
-                    )
-                  ) : (
-                    ""
-                  )}
-                </div>
           </div>
-          
 
           <div className="p-4 flex-grow hidden md:flex">
             <p className="text-gray-700 text-sm line-clamp-2">{meme.caption}</p>
@@ -304,28 +346,28 @@ const Meme = ({ params }) => {
               </div>
             </Link>
             <div className="flex items-center">
-                  {meme?.follow_status ? (
-                    meme?.follow_status === "own_post" ? (
-                      ""
-                    ) : meme?.follow_status === "following" ? (
-                      <button
-                        onClick={() => handleFollow(meme.username)}
-                        className="rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-530 cursor-pointer"
-                      >
-                        Unfollow
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => handleFollow(meme.username)}
-                        className="bg-violet-100 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-300 cursor-pointer"
-                      >
-                        Follow
-                      </button>
-                    )
-                  ) : (
-                    ""
-                  )}
-                </div>
+              {meme?.follow_status ? (
+                meme?.follow_status === "own_post" ? (
+                  ""
+                ) : meme?.follow_status === "following" ? (
+                  <button
+                    onClick={() => handleFollow(meme.username)}
+                    className="rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-530 cursor-pointer"
+                  >
+                    Unfollow
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => handleFollow(meme.username)}
+                    className="bg-violet-100 rounded-md px-2 font-semibold text-gray-700 m-1 py-1 text-md border border-violet-300 cursor-pointer"
+                  >
+                    Follow
+                  </button>
+                )
+              ) : (
+                ""
+              )}
+            </div>
           </div>
 
           <div className="md:flex justify-between items-center mx-10 p-4 rounded-3xl border-t border-gray-200 hidden  bg-white">

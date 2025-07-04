@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import {
   IoSearchOutline,
   IoAddSharp,
@@ -16,6 +16,8 @@ import { IoMdSettings } from "react-icons/io";
 import { BsGithub } from "react-icons/bs";
 
 const Header = () => {
+  const { data: session, status } = useSession();
+
   const pathname = usePathname();
 
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -48,7 +50,7 @@ const Header = () => {
       setSearchQuery("");
       setSearchResults([]);
     }
-  }, [pathname])
+  }, [pathname]);
 
   return (
     <>
@@ -110,12 +112,6 @@ const Header = () => {
           )}
         </div>
 
-        <div className="flex md:hidden items-center gap-3 pr-2">
-          <button onClick={() => setMobileSearchOpen((prev) => !prev)}>
-            <IoSearchOutline size={25} />
-          </button>
-        </div>
-
         <div className="hidden md:flex items-center gap-3">
           <Link
             href="/post/create"
@@ -127,22 +123,49 @@ const Header = () => {
             href="/profile/edit"
             className={pathname === "/profile" ? "" : "hidden"}
           >
-            <IoMdSettings size={25} color="#30355d" />
+            <IoMdSettings size={35} color="#30355d" />
           </Link>
           <Link
             href="/profile"
             className={`${pathname === "/profile" ? "hidden" : ""}`}
           >
-            <HiOutlineUserCircle size={25} color="#30355d" />
+            {status === "loading" ? (
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-violet-500"></div>
+            ) : status === "unauthenticated" ? (
+              <HiOutlineUserCircle size={35} color="#30355d" />
+            ) : (
+              <div className="flex items-center border-2 border-violet-400 rounded-full">
+                <Image
+                  src={session.user.image}
+                  alt={session.user.username}
+                  width={32}
+                  height={32}
+                  className="rounded-full"
+                />
+              </div>
+            )}
           </Link>
           <Link href="https://github.com/NOTBOOSTER/">
-            <BsGithub size={22} color="#30355d" />
+            <BsGithub size={30} color="#30355d" />
           </Link>
+          <button
+          onClick={() => signOut()}
+          className={`${pathname === "/profile" ? "md:flex" : "hidden"} hidden `}
+        >
+          <IoLogOut size={35} color="#30355d" />
+        </button>
+        </div>
+        <div className="md:hidden flex items-center gap-3">
+          <div className="flex md:hidden items-center gap-3 pr-2">
+            <button onClick={() => setMobileSearchOpen((prev) => !prev)}>
+              <IoSearchOutline size={25} />
+            </button>
+          </div>
           <button
             onClick={() => signOut()}
             className={`${pathname === "/profile" ? "flex" : "hidden"}`}
           >
-            <IoLogOut size={25} color="#30355d" />
+            <IoLogOut size={35} color="#30355d" />
           </button>
         </div>
       </div>
