@@ -4,7 +4,8 @@ const nextConfig = {
     domains: [
     'avatars.githubusercontent.com',
     'res.cloudinary.com',
-    'cdn.discordapp.com'
+    'cdn.discordapp.com',
+    'lh3.googleusercontent.com'
   ],
   },
 };

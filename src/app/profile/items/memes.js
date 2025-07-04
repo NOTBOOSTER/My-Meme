@@ -1,86 +1,102 @@
+import Image from "next/image";
+import Link from "next/link";
+import { useState, useEffect, useCallback } from "react";
+import { MdOutlineDeleteForever } from "react-icons/md";
 
-
-import Image from "next/image"
-import Link from "next/link"
-import { useState, useEffect, useCallback } from 'react'
-
-const Memes = ({userId}) => {
-  const [memes, setMemes] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [hasMore, setHasMore] = useState(true)
-  const [page, setPage] = useState(1)
-  const itemsPerPage = 12
+const Memes = ({ userId }) => {
+  const [memes, setMemes] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 12;
 
   const getPageParams = (pageNum) => {
-    const start = (pageNum - 1) * itemsPerPage
-    const end = pageNum * itemsPerPage
-    return { start, end }
-  }
+    const start = (pageNum - 1) * itemsPerPage;
+    const end = pageNum * itemsPerPage;
+    return { start, end };
+  };
 
   const fetchMemes = async (pageNum, append = false) => {
-    if (loading) return
-    
-    setLoading(true)
+    if (loading) return;
+
+    setLoading(true);
     try {
-      const { start, end } = getPageParams(pageNum)
-      
+      const { start, end } = getPageParams(pageNum);
+
       const response = await fetch(`/api/memes/user`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ start, end, limit: itemsPerPage, userId }),
-      })
-      const data = await response.json()
-      
+      });
+      const data = await response.json();
+
       if (data.memes && data.memes.length > 0) {
         if (append) {
-          setMemes(prev => [...prev, ...data.memes])
+          setMemes((prev) => [...prev, ...data.memes]);
         } else {
-          setMemes(data.memes)
+          setMemes(data.memes);
         }
-        
-        setHasMore(data.memes.length === itemsPerPage)
+
+        setHasMore(data.memes.length === itemsPerPage);
       } else {
-        setHasMore(false)
+        setHasMore(false);
       }
     } catch (error) {
-      console.error('Failed to fetch memes:', error)
-      setHasMore(false)
+      console.error("Failed to fetch memes:", error);
+      setHasMore(false);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const loadMoreMemes = useCallback(() => {
     if (!loading && hasMore) {
-      const nextPage = page + 1
-      setPage(nextPage)
-      fetchMemes(nextPage, true)
+      const nextPage = page + 1;
+      setPage(nextPage);
+      fetchMemes(nextPage, true);
     }
-  }, [page, loading, hasMore, userId])
+  }, [page, loading, hasMore, userId]);
 
   const handleScroll = useCallback(() => {
-  if (loading || !hasMore) return;
+    if (loading || !hasMore) return;
 
-  const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-  const windowHeight = window.innerHeight;
-  const documentHeight = document.documentElement.scrollHeight;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    const windowHeight = window.innerHeight;
+    const documentHeight = document.documentElement.scrollHeight;
 
-  if (scrollTop + windowHeight >= documentHeight - 200) {
-    loadMoreMemes();
-  }
-}, [loading, hasMore, loadMoreMemes]);
+    if (scrollTop + windowHeight >= documentHeight - 200) {
+      loadMoreMemes();
+    }
+  }, [loading, hasMore, loadMoreMemes]);
 
   useEffect(() => {
     if (userId) {
-      fetchMemes(1)
+      fetchMemes(1);
     }
-  }, [userId])
+  }, [userId]);
+
+  const deleteMeme = async (memeId, userId) => {
+    try {
+      const response = await fetch(`/api/meme/delete`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ memeId , userId }),
+      });
+      if (response.ok) {
+        setMemes((prevMemes) => prevMemes.filter((meme) => meme.id !== memeId));
+      }
+    } catch (error) {
+      console.error("Failed to delete meme:", error);
+    }
+  };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [handleScroll])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [handleScroll]);
 
   if (loading && memes.length === 0) {
     return (
@@ -88,7 +104,7 @@ const Memes = ({userId}) => {
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
         <span className="ml-3 text-gray-600">Loading memes...</span>
       </div>
-    )
+    );
   }
 
   if (memes.length === 0 && !loading) {
@@ -97,24 +113,30 @@ const Memes = ({userId}) => {
         <div className="text-6xl mb-4">😔</div>
         <p className="text-gray-500 text-lg">No memes uploaded yet</p>
       </div>
-    )
+    );
   }
 
   return (
     <div className="w-full px-0">
       <div className="grid grid-cols-3 xs:grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8 xl:grid-cols-10 2xl:grid-cols-12 3xl:grid-cols-15 gap-1 sm:gap-2">
         {memes.map((meme) => (
-          <Link href={`/meme/${meme.id}`} key={meme.id}>
+          <div key={meme.id} className="relative">
+          <Link href={`/meme/${meme.id}`}>
             <div className="aspect-square overflow-hidden rounded-md border border-gray-200 hover:shadow-lg transition-all duration-200 cursor-pointer group">
-              <Image 
-                src={meme.result_url} 
-                width={120} 
-                height={120} 
+              <Image
+                src={meme.result_url}
+                width={120}
+                height={120}
                 alt={meme.caption || "User meme"}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
               />
             </div>
+            
           </Link>
+          <button onClick={() => deleteMeme(meme.id, userId)}>
+              <MdOutlineDeleteForever size={25} className="absolute top-2 right-2 text-gray-600 hover:text-red-600 transition-all duration-200 z-10 hover:scale-110 rounded-full bg-violet-200 p-1" />
+            </button>
+          </div>
         ))}
       </div>
 
@@ -131,7 +153,7 @@ const Memes = ({userId}) => {
         </div>
       )}
     </div>
-  )
-}
+  );
+};
 
-export default Memes
+export default Memes;

@@ -11,7 +11,7 @@ import Image from "next/image";
 const Footer = () => {
   const { data: session, status } = useSession();
   return (
-    <div className="md:hidden flex fixed bottom-6 items-center justify-center w-full">
+    <div className="md:hidden flex fixed bottom-6 items-center justify-center w-full z-50">
       <div className="bg-gradient-to-r from-indigo-300 to-violet-300 flex gap-9 p-2 rounded-full px-12">
         <Link className="p-2" href="/">
           <RiHome2Fill size={30} color="30355d"/>
