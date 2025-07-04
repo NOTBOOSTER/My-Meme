@@ -154,7 +154,7 @@ export default function Home() {
           {memes.map((meme) => (
             <div
               key={meme.id}
-              className="bg-gradient-to-b from-sky-100 to-emerald-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col"
+              className="bg-gradient-to-b from-blue-100 to-violet-50 rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col"
             >
               <div className="flex justify-between items-center mx-4">
                 <Link

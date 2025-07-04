@@ -23,6 +23,7 @@ const Create = () => {
       credentials: "include",
     });
     const res = await response.json();
+    toast("Generating... it may take a while", { duration: 10000 });
     if (res.response === "success") redirect("/");
 
     ref.current.value = "";
