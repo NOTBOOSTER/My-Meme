@@ -7,7 +7,6 @@ import { auth } from "@/lib/auth";
 
 export async function POST(request) {
   const session = await auth();
-  console.log(session);
   
   if (!session) {
     return NextResponse.redirect(new URL("/auth", request.url));
